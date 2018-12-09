@@ -5,9 +5,8 @@ from __future__ import unicode_literals
 
 import sys
 import argparse
-import random
 
-from solver.solver import solver
+from solver.paint_solver import Solver
 from flask import Flask, request
 import json
 from prometheus_client import Counter, start_wsgi_server as prometheus_server
@@ -21,13 +20,13 @@ app.config.from_object(__name__)
 requests_total = Counter('requests_total', 'Total number of requests')
 
 
-# The root endpoint returns the app value. Some percentage of the time
-# (given by app.config['failure_rate']) calls to this endpoint will cause the
-# app to crash (exits non-zero).
+# The root endpoint returns the app value.
+# TODO: Add random failures
 @app.route('/v1/')
 def index():
     input_val = json.loads(request.args.get("input"))
-    result = solver(input_val)
+    solver = Solver(input_val)
+    result = solver.solve()
     return result
 
 
