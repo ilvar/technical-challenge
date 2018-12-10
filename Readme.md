@@ -72,7 +72,5 @@ It's O(N * N * M), worst case is 2000 * 2000 * 2000 == 8 billion iterations and 
 How we can improve this?
 
 I've tried other tree building approaches (tree of demands) but they're also quite complex. So let's just refactor and
-add some pruning. There is a ~3x iterations count reduction in the e2e tests, worst case is the same though.
-
-Potential improvement: use bitmasks instead of checking solutions item per item.
+add some pruning. I've also improved solution check by using bitmasks instead of manual checks.
 
