@@ -54,7 +54,7 @@ class Solver(object):
 
         solved, solution, best_sum = self.reduce(0, None)
 
-        logging.error("Finished in %s iterations" % self._iterations)
+        logging.debug("Finished in %s iterations" % self._iterations)
 
         if solved:
             solution_str = list("{0:b}".format(solution))
@@ -117,7 +117,7 @@ class Solver(object):
         
         result = None
         solved = False
-        for i in range(self.colors):
+        for i in range(change or 0, self.colors):
             # Check if i-th bit is 0
             if (solution >> (self.colors - i - 1)) % 2 == 0:
                 self._iterations += 1
