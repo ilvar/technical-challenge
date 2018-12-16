@@ -18,8 +18,11 @@ class Solver(object):
         self.customers = int(problem.get("customers"))
         self.demands = problem.get("demands")
 
-        self.all_glossy_bits = int(''.join(['0'] * self.colors), 2)
-        self.all_matte_bits = int(''.join(['1'] * self.colors), 2)
+        # Set all bits to 0
+        self.all_glossy_bits = 0
+
+        # Set all bits to 1, this is a bit more tricky
+        self.all_matte_bits = 2 ** self.colors - 1
 
         self.demand_bits = []
         for c in range(self.customers):
@@ -31,6 +34,8 @@ class Solver(object):
 
             for i in range(length):
                 (color, matte) = (demand[2 * i], demand[2 * i + 1])
+
+                # Set color-th bit to 1 in respective bit array. No need to shift by 1 because `color` is 1 based.
                 if matte == 1:
                     customer_matte |= 1 << (self.colors - color)
                 else:
@@ -65,13 +70,20 @@ class Solver(object):
         :param solution:
         :return: bool
         """
+        # Glossy == non-matte, so xor fits nicely here
         sol_glossy_bits = solution ^ self.all_matte_bits
+        
+        # Just for clarity
         sol_matte_bits = solution
+        
         for customer in range(self.customers):
             customer_gloss, customer_matte = self.demand_bits[customer]
+            
+            # Check if any of bits match
             match_gloss = customer_gloss & sol_glossy_bits
             match_matte = customer_matte & sol_matte_bits
             match_any = match_gloss != 0 or match_matte != 0
+            
             if not match_any:
                 return False
         return True
@@ -86,8 +98,11 @@ class Solver(object):
         :param best_sum: best mattes count so far
         :return:
         """
+        
+        # It's int so no need to copy
         solution = solution_on_stack
         if change is not None:
+            # Set change-th bit to 1
             solution |= 1 << (self.colors - change - 1)
             curr_sum += 1
             
@@ -103,6 +118,7 @@ class Solver(object):
         result = None
         solved = False
         for i in range(self.colors):
+            # Check if i-th bit is 0
             if (solution >> (self.colors - i - 1)) % 2 == 0:
                 self._iterations += 1
                 solved_i, result_i, sum_i = self.reduce(solution, i, curr_sum, best_sum)
