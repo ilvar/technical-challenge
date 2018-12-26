@@ -6,7 +6,7 @@ from __future__ import unicode_literals
 import sys
 import argparse
 
-from solver.paint_solver import Solver
+from solver.customer_solver import Solver
 from flask import Flask, request
 import json
 from prometheus_client import Counter, start_wsgi_server as prometheus_server

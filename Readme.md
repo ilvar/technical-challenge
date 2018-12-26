@@ -74,3 +74,15 @@ How we can improve this?
 I've tried other tree building approaches (tree of demands) but they're also quite complex. So let's just refactor and
 add some pruning. I've also improved solution check by using bitmasks instead of manual checks.
 
+## New solver algo
+
+Let's save some RAM and CPU. Instead of a tree, let's iterate through the customers, and populate mattes bucket (set actually)
+if it helps current customer to become satisfied (i.e. if he has matte demand, and it's not met yet, and all his glossy demands fail).
+If we made any changes to the mattes bucket, re-run the iteration. If not (all customers are satisfied), return the current mattes bucket.
+
+Worst case CPU complexity is still high: O(M * M * T) but the best case is just O(M) (everyone is satisfied straight away), and the average
+is also way better: in all the test cases it's at least 3 times faster than the bit arrays solution, plus we got rid of the recursion,
+so we don't need piles of RAM anymore. Space complexity is O(N + T) now, and we can improve it a bit more by preparing demands for each
+customer (as you did in the original solution).
+
+Though, if customers could demand few matte batches, we would still have to build the tree.

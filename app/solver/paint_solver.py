@@ -54,7 +54,7 @@ class Solver(object):
 
         solved, solution, best_sum = self.reduce(0, None)
 
-        logging.debug("Finished in %s iterations" % self._iterations)
+        logging.error("Finished in %s iterations" % self._iterations)
 
         if solved:
             solution_str = list("{0:b}".format(solution))
@@ -77,6 +77,8 @@ class Solver(object):
         sol_matte_bits = solution
         
         for customer in range(self.customers):
+            self._iterations += 1
+
             customer_gloss, customer_matte = self.demand_bits[customer]
             
             # Check if any of bits match
@@ -120,7 +122,6 @@ class Solver(object):
         for i in range(change or 0, self.colors):
             # Check if i-th bit is 0
             if (solution >> (self.colors - i - 1)) % 2 == 0:
-                self._iterations += 1
                 solved_i, result_i, sum_i = self.reduce(solution, i, curr_sum, best_sum)
                 if solved_i:
                     if best_sum is None or sum_i < best_sum:
